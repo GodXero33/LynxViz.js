@@ -586,6 +586,17 @@ a:visited {
 		padding-inline: 2px;
 		border-radius: 4px;
 	}
+
+	ul {
+		color: var(--lv-iframe-text1);
+		font-size: 1.1rem;
+		padding-left: 2rem;
+		list-style-type: none;
+	}
+
+	ul li p {
+		padding-left: 2rem;
+	}
 }
 
 @container header (max-width: 420px) {

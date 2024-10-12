@@ -5,7 +5,8 @@
 	const pages = [
 		{ name: 'introduction', full: 'introduction' },
 		{ name: 'installation', full: 'installation' },
-		{ name: 'getstart', full: 'getting started' }
+		{ name: 'getstart', full: 'getting started' },
+		{ name: 'libmethods', full: 'library methods and properties' }
 	];
 
 	if (!saveData) {
