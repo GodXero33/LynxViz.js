@@ -1,6 +1,38 @@
 class GridMap {
 	static generate (maze) {
-		//
+		const cells = Array.from({ length: maze.rows * 4 }, () => Array.from({ length: maze.cols * 4 }, () => 0));
+
+		maze.grid.forEach(cell => {
+			if (cell.walls[0]) {
+				cells[cell.y * 4][cell.x * 4] = 1;
+				cells[cell.y * 4][cell.x * 4 + 1] = 1;
+				cells[cell.y * 4][cell.x * 4 + 2] = 1;
+				cells[cell.y * 4][cell.x * 4 + 3] = 1;
+			}
+
+			if (cell.walls[1]) {
+				cells[cell.y * 4][cell.x * 4 + 3] = 1;
+				cells[cell.y * 4 + 1][cell.x * 4 + 3] = 1;
+				cells[cell.y * 4 + 2][cell.x * 4 + 3] = 1;
+				cells[cell.y * 4 + 3][cell.x * 4 + 3] = 1;
+			}
+
+			if (cell.walls[2]) {
+				cells[cell.y * 4 + 3][cell.x * 4] = 1;
+				cells[cell.y * 4 + 3][cell.x * 4 + 1] = 1;
+				cells[cell.y * 4 + 3][cell.x * 4 + 2] = 1;
+				cells[cell.y * 4 + 3][cell.x * 4 + 3] = 1;
+			}
+
+			if (cell.walls[3]) {
+				cells[cell.y * 4][cell.x * 4] = 1;
+				cells[cell.y * 4 + 1][cell.x * 4] = 1;
+				cells[cell.y * 4 + 2][cell.x * 4] = 1;
+				cells[cell.y * 4 + 3][cell.x * 4] = 1;
+			}
+		});
+
+		return cells;
 	}
 }
 
@@ -78,6 +110,7 @@ class MazeMap {
 		this.animate = false;
 		this.isReady = false;
 		this.generated = false;
+		this.gridMap = GridMap.generate(this);
 
 		this.clean();
 	}
@@ -86,6 +119,9 @@ class MazeMap {
 		this.grid.forEach(cell => {
 			Cell.clean(cell);
 		});
+
+		this.grid[0].walls[0] = false;
+		this.grid[this.grid.length - 1].walls[2] = false;
 
 		this.stack = [];
 		this.current = this.grid[0];
@@ -124,6 +160,22 @@ class MazeMap {
 
 		this.current = null;
 		this.generated = true;
+		this.gridMap = GridMap.generate(this);
+	}
+
+	drawGridMap (ctx) {
+		const size = this.cellSize / 4;
+
+		ctx.translate(this.x, this.y);
+
+		for (let y = 0; y < this.gridMap.length; y++) {
+			for (let x = 0; x < this.gridMap[0].length; x++) {
+				ctx.fillStyle = this.gridMap[y][x] == 1 ? '#8f8' : '#040';
+				ctx.fillRect(x * size + 0.5, y * size + 0.5, size - 1, size - 1);
+			}
+		}
+
+		ctx.translate(-this.x, -this.y);
 	}
 
 	draw (ctx) {
@@ -158,6 +210,7 @@ class MazeMap {
 			this.current = null;
 			this.isReady = false;
 			this.generated = true;
+			this.gridMap = GridMap.generate(this);
 			return;
 		}
 
@@ -211,13 +264,14 @@ class MazeMap {
 		return null;
 	}
 
-	getData () {
+	getMazeData () {
 		const data = {};
 		const meta = {};
 
 		meta.algorithm = 'Recursive Backtracking';
 		meta.creator = 'GodXero - https://github.com/GodXero33';
 		meta.version = 'MazeGenerator - v1.0.0';
+		meta.mode = 'maze-map';
 
 		data.meta = meta;
 		data.rows = this.rows;
@@ -239,5 +293,36 @@ class MazeMap {
 		data.cells = cells;
 
 		return JSON.stringify(data, null, '\t');
+	}
+
+	getGridData () {
+		const data = {};
+		const meta = {};
+
+		meta.algorithm = 'Recursive Backtracking';
+		meta.creator = 'GodXero - https://github.com/GodXero33';
+		meta.version = 'MazeGenerator - v1.0.0';
+		meta.mode = 'grid-map';
+
+		data.meta = meta;
+		data.rows = this.rows * 4;
+		data.cols = this.cols * 4;
+		data.grid = this.gridMap;
+
+		return JSON.stringify(data, (_, value) => {
+			if (Array.isArray(value) && Array.isArray(value[0])) {
+				return value.map(row => JSON.stringify(row));
+			}
+
+			return value;
+		}, '\t').replace(/"\[/g, '[').replace(/\]"/g, ']');
+	}
+
+	getData (mode) {
+		if (mode == 'maze') {
+			return this.getMazeData();
+		}
+
+		return this.getGridData();
 	}
 }

@@ -10,6 +10,7 @@ animation.append(canvas);
 const map = new MazeMap(30, 30);
 let frames = 0;
 let frameSpeed = 2;
+let drawMode = 'maze';
 
 console.log(animation, canvas, map);
 
@@ -17,7 +18,12 @@ function draw (ctx) {
 	const transform = ctx.getTransform();
 
 	canvas.clear();
-	map.draw(ctx);
+
+	if (drawMode == 'maze') {
+		map.draw(ctx);
+	} else {
+		map.drawGridMap(ctx);
+	}
 
 	ctx.setTransform(transform);
 }
@@ -40,16 +46,26 @@ window.addEventListener('load', () => {
 	resize();
 	animation.play();
 	
+	document.getElementById('map-mode-btn').addEventListener('click', (event) => {
+		if (drawMode == 'grid') {
+			event.target.textContent = 'Change Map Mode To Grid';
+			drawMode = 'maze';
+		} else {
+			event.target.textContent = 'Change Map Mode To Maze';
+			drawMode = 'grid';
+		}
+	});
+
 	document.getElementById('mode-btn').addEventListener('click', (event) => {
 		map.animate = !map.animate;
 
 		if (map.animate) {
-			event.target.textContent = 'Change Mode To Normal';
+			event.target.textContent = 'Change Generator Mode To Normal';
 		} else {
-			event.target.textContent = 'Change Mode To Animate';
+			event.target.textContent = 'Change Generator Mode To Animate';
 		}
 	});
-
+	
 	document.getElementById('gen-btn').addEventListener('click', () => {
 		map.start();
 	});
@@ -85,7 +101,7 @@ window.addEventListener('load', () => {
 		const pre = document.createElement('pre');
 		const code = document.createElement('code');
 
-		code.textContent = map.getData();
+		code.textContent = map.getData(drawMode);
 
 		pre.appendChild(code);
 		
