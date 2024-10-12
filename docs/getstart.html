@@ -1,0 +1,174 @@
+<h1>Getting Started</h1>
+<br>
+<br>
+<div class="top-intro">
+	<p><span>To get started with LynxViz, follow these steps to include it in your project.</span></p>
+</div>
+<br>
+<br>
+<h2>Setting Up Your Project</h2>
+<br>
+<div class="sub-text">
+	<p><span>Here is a template to help you set up a basic project using LynxViz:</span></p>
+</div>
+
+<div class="prism-cont">
+	<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+	&lt;head&gt;
+		&lt;title&gt;LynxViz Template&lt;/title&gt;
+		&lt;meta charset="utf-8"&gt;
+		&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+		&lt;link rel="stylesheet" href="res/css/main.css"&gt;
+		&lt;script type="text/javascript" src="path/to/lynxviz.js"&gt;&lt;/script&gt;
+		&lt;script type="text/javascript" src="path/to/sketch.js"&gt;&lt;/script&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;div id="main-container"&gt;
+			&lt;div id="canvas-container"&gt;&lt;/div&gt;
+		&lt;/div&gt;
+
+		&lt;script type="text/javascript" src="path/to/animation.js"&gt;&lt;/script&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</div>
+
+<br>
+<br>
+<h2>CSS Styles</h2>
+<br>
+<div class="sub-text">
+	<p><span>Add the following CSS styles to your main.css file to style your project:</span></p>
+</div>
+
+<div class="prism-cont">
+	<pre><code class="language-css">:root {
+	--background-color: #000000;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	user-select: none;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	height: 100svh;
+}
+
+body {
+	background-color: var(--background-color);
+}
+
+#main-container {
+	position: absolute;
+	margin-inline: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	max-width: 900px;
+}
+
+#canvas-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}	
+</code></pre>
+</div>
+
+<br>
+<br>
+<h2>JavaScript Code
+</h2>
+<br>
+<div class="sub-text">
+	<p><span>Add the following JavaScript code to your</span> <span class="special">animation.js</span> <span>file to initialize and use LynxViz:</span></p>
+</div>
+
+<div class="prism-cont">
+	<pre><code class="language-javascript">console.log(LynxViz);
+
+const animation = LynxViz.createAnimation({ fps: 60 });
+const canvas = LynxViz.createCanvas();
+
+canvas.setParent(document.getElementById('canvas-container'));
+canvas.clearColor = '#000';
+animation.append(canvas);
+
+console.log(animation, canvas);
+
+function showFPS (ctx, fps) {
+	ctx.fillStyle = '#fff';
+	ctx.strokeStyle = '#000';
+	ctx.fillRect(0, 0, 42, 22);
+	ctx.strokeRect(0, 0, 42, 22);
+
+	ctx.font = '18px Arial';
+	ctx.textAlign = 'left';
+	ctx.textBasline = 'hanging';
+	ctx.fillStyle = '#000';
+	ctx.fillText((Math.round(fps * 10) / 10).toFixed(1), 3, 18);
+}
+
+function draw (ctx) {
+	const transform = ctx.getTransform();
+
+	canvas.clear();
+	showFPS(ctx, animation.fps);
+
+	ctx.translate(canvas.width / 2, canvas.height / 2);
+	// Draw
+
+	ctx.setTransform(transform);
+}
+
+function update (dt) {
+	// Update
+}
+
+animation.loop = update;
+canvas.renderer = draw;
+
+function resize () {
+	const parent = canvas.domElement.parentElement;
+	canvas.resize(parent.offsetWidth, parent.offsetHeight);
+	canvas.draw();
+}
+
+window.addEventListener('load', () => {
+	resize();
+	animation.play();
+});
+window.addEventListener('resize', resize);
+window.addEventListener('keydown', (event) => {
+	if (event.code == 'Space') {
+		if (animation.isPaused) {
+			animation.play();
+		} else {
+			animation.pause();
+		}
+	}
+});	
+</code></pre>
+</div>
+
+<br>
+<br>
+<div class="sub-text">
+	<p><span>Above template the <span class="special">sketch.js</span> is your <span class="special">custome script</span> that includes extra function classes variables and other stuff. The <span class="special">animation.js</span> is the place that where <span class="special">animation happens</span>. It's recomended to keep this seperation to avoid confution in the code and make the code more cleaner.</span></p>
+</div>
+<br>
+<div class="sub-text">
+	<p><span>By following these steps, you'll have a basic setup for using LynxViz in your project. This will allow you to create and animate dynamic 2D graphics with ease.</span></p>
+</div>
+<br>
+<br>
