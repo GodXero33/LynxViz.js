@@ -86,7 +86,7 @@ window.addEventListener('load', () => {
 
 			const link = document.createElement('a');
 			link.href = croppedImage;
-			link.download = 'cropped_canvas.png';
+			link.download = drawMode + '.png';
 			link.click();
 		} else {
 			alert('The Maze is still generating or hasn\'t started to generate yet!');

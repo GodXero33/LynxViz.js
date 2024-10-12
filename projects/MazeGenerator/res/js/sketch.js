@@ -32,6 +32,11 @@ class GridMap {
 			}
 		});
 
+		cells[0][2] = 1;
+		cells[0][3] = 1;
+		cells[maze.rows * 4 - 1][maze.rows * 4 - 3] = 1;
+		cells[maze.rows * 4 - 1][maze.rows * 4 - 4] = 1;
+
 		return cells;
 	}
 }
