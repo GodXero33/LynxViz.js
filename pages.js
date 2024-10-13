@@ -2,7 +2,7 @@ const NOT_FOUND_404_TXT = `Wtf man!`;
 const LOADER_TRIGGER_WAIT_TIME = 2500;
 const OLD_PAGE_REMOVE_TIME = 1000;
 
-const mainCont = document.getElementById('main-container');
+const pageCont = document.getElementById('pages-container');
 const loadingCont = document.getElementById('loading-wrapper');
 let currentPage = null;
 let isPageLoading = false;
@@ -50,7 +50,7 @@ function createNewPage (pageData) {
 		page.classList.remove('hide');
 	}
 
-	mainCont.appendChild(page);
+	pageCont.appendChild(page);
 	
 	return new Promise(async (res, rej) => {
 		const textData = await loadTextContent(pageData.textURL);
@@ -119,7 +119,7 @@ async function loadNewPage (pageData) {
 
 function init () {
 	window.addEventListener('click', () => {
-		loadNewPage(pagesData[0]);
+		// loadNewPage(pagesData[0]);
 	});
 
 	loadNewPage(pagesData[0]);

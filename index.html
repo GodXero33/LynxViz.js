@@ -8,10 +8,34 @@
 		<link rel="stylesheet" href="index.css">
 		<link rel="stylesheet" href="res/prism.css">
 		<script src="res/prism.js" type="text/javascript"></script>
-		<script src="index.js" type="text/javascript" defer></script>
+		<script src="pages.js" type="text/javascript" defer></script>
+		<script src="navbar.js" type="text/javascript" defer></script>
 	</head>
 	<body>
-		<div id="main-container"></div>
+		<div id="main-container">
+			<nav id="nav-bar">
+				<div class="nav-item" id="nav-logo">
+					<img src="res/images/logo-transp.png">
+				</div>
+				<div class="nav-item" id="nav-search">
+					<input type="text" id="nav-search-bar" placeholder="search" tabindex="1">
+					<div id="nav-search-btn"></div>
+					<div id="search-result-cont"></div>
+				</div>
+				<div class="nav-item" id="nav-bar-extra-btns-cont">
+					<div class="nav-item btn" id="nav-example-btn">Examples</div>
+					<div class="nav-item btn" id="nav-community-btn">Community</div>
+					<div class="nav-item btn" id="nav-faq-btn">FAQ</div>
+				</div>
+				<div id="nav-bar-open-btn">
+					<div class="open-btn-fragment"></div>
+					<div class="open-btn-fragment"></div>
+					<div class="open-btn-fragment"></div>
+					<input type="checkbox" checked>
+				</div>
+			</nav>
+			<div id="pages-container"></div>
+		</div>
 		<div id="loading-wrapper" class="hide"></div>
 	</body>
 </html>
