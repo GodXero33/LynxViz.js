@@ -14,6 +14,10 @@
 	--lv-nav-bar-c4: hsl(var(--lv-theme-hsl), 30%, 30%);
 	--lv-nav-bar-c5: #ffffff;
 	--lv-nav-bar-c6: rgba(0, 0, 0, 0.4);
+	--lv-nav-bar-c7: #000000;
+	--lv-nav-bar-c8: #ffffff;
+	--lv-nav-bar-c9: hsl(var(--lv-theme-hsl), 100%, 40%);
+	--lv-nav-bar-c10: hsl(var(--lv-theme-hsl), 100%, 60%);
 
 	--lv-doc-anchor: hsl(var(--lv-theme-hsl), 80%, 50%);
 	--lv-doc-anchor-visited: hsl(calc(var(--lv-theme-hsl) + 20deg), 70%, 40%);
@@ -147,39 +151,45 @@ input {
 	border-radius: calc(var(--lv-nav-bar-height) * 0.25) calc(var(--lv-nav-bar-height) * 0.25) 0 0;
 }
 
-#nav-search-btn {
-	position: relative;
-	top: 0;
-	left: 0;
-	height: 100%;
-	aspect-ratio: 1 / 1;
-	cursor: pointer;
-	background-image: url(res/images/magnifier.png);
-	background-position: center center;
-	background-size: 60% 60%;
-	background-repeat: no-repeat;
-	filter: invert(var(--lv-filter-inv1));
-}
-
 #search-result-cont {
 	position: absolute;
 	top: 100%;
 	left: 0;
-	width: calc(100% - var(--lv-nav-bar-height) + 10px);
+	width: 100%;
 	height: fit-content;
-	max-height: min(calc(100vh - var(--lv-nav-bar-height)), 300px);
+	max-height: min(calc(100vh - var(--lv-nav-bar-height)), 500px);
 	background-color: var(--lv-nav-bar-c4);
-	opacity: 0;
-	border: 3px solid var(--lv-nav-bar-c2);
-	border-radius: calc(var(--lv-nav-bar-height) * 0.5);
-	pointer-events: none;
+	opacity: 1;
+	border-radius: 0 0 calc(var(--lv-nav-bar-height) * 0.25) calc(var(--lv-nav-bar-height) * 0.25);
 	transition: opacity 0.2s linear, border-radius 0.2s linear;
+	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: overlay;
 }
 
-#nav-search-bar:focus ~ #search-result-cont {
-	opacity: 1;
-	pointer-events: all;
-	border-radius: 0 0 calc(var(--lv-nav-bar-height) * 0.25) calc(var(--lv-nav-bar-height) * 0.25);
+#search-result-cont.hide {
+	opacity: 0;
+	border-radius: calc(var(--lv-nav-bar-height) * 0.5);
+}
+
+#search-result-cont > div {
+	position: relative;
+	padding: 5px;
+	margin-top: 2px;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: fit-content;
+	color: var(--lv-nav-bar-c5);
+	cursor: pointer;
+	font-size: 0.85rem;
+	background-color: var(--lv-nav-bar-c9);
+	transition: background-color 0.2s linear;
+}
+
+#search-result-cont > div span {
+	color: var(--lv-nav-bar-c7);
+	background-color: var(--lv-nav-bar-c8);
 }
 
 #nav-bar-extra-btns-cont {
@@ -363,6 +373,9 @@ input {
 		background-color: var(--lv-scrollbar-thumb-hvr);
 	}
 	
+	#search-result-cont > div:hover {
+		background-color: var(--lv-nav-bar-c10);
+	}
 }
 
 @media screen and (min-width: 1200px) {
@@ -381,7 +394,7 @@ input {
 	}
 
 	#nav-bar {
-		padding-right: calc(var(--lv-nav-bar-height) - 5px);
+		padding-right: calc(var(--lv-nav-bar-height) + 5px);
 	}
 
 	#nav-search {
