@@ -41,10 +41,12 @@ window.addEventListener('click', (event) => {
 });
 
 function goToSearchResult (result) {
-	for (let data of pagesData) {
-		if (data.textURL == result.target) {
-			loadNewPage(data);
-		}
+	const resultIndex = pagesData.findIndex(data => data.textURL == result.target);
+
+	if (resultIndex == -1) {
+		console.warn('Can\'t find the data');
+	} else {
+		loadNewPage(resultIndex);
 	}
 }
 

@@ -4,10 +4,12 @@ const OLD_PAGE_REMOVE_TIME = 1000;
 
 const pageCont = document.getElementById('pages-container');
 const loadingCont = document.getElementById('loading-wrapper');
+const navigatorBtns = [document.getElementById('navigator-prev'), document.getElementById('navigator-next')];
 let currentPage = null;
 let isPageLoading = false;
 let pagesData = null;
 let loaderShowTimeOut = null;
+let currentPageIndex = 0;
 
 function loadTextContent (url) {
 	return new Promise(async (req, rej) => {
@@ -43,13 +45,16 @@ function loadBGImage (url) {
 
 function createNewPage (pageData) {
 	const page = document.createElement('div');
+	const pageContent = document.createElement('div');
 	page.classList.add('page-container');
 	page.classList.add('hide');
+	pageContent.classList.add('page-content');
 
 	if (currentPage == null) {
 		page.classList.remove('hide');
 	}
 
+	page.appendChild(pageContent);
 	pageCont.appendChild(page);
 	
 	return new Promise(async (res, rej) => {
@@ -72,7 +77,7 @@ function createNewPage (pageData) {
 			page.style.backgroundImage = `url(${bgImage.src})`;
 		}
 
-		page.innerHTML = textData;
+		pageContent.innerHTML = textData;
 
 		if (currentPage == null) {
 			currentPage = page;
@@ -83,10 +88,24 @@ function createNewPage (pageData) {
 	});
 }
 
-async function loadNewPage (pageData) {
-	if (isPageLoading) return;
+async function loadNewPage (pageDataIndex) {
+	if (isPageLoading || pagesData == null || pageDataIndex < 0 || pageDataIndex > pagesData.length - 1) return;
 
 	isPageLoading = true;
+	currentPageIndex = pageDataIndex;
+	const pageData = pagesData[pageDataIndex];
+
+	if (pageDataIndex == 0) {
+		navigatorBtns[0].classList.add('hide');
+	} else if (navigatorBtns[0].classList.contains('hide')) {
+		navigatorBtns[0].classList.remove('hide');
+	}
+	
+	if (pageDataIndex == pagesData.length - 1) {
+		navigatorBtns[1].classList.add('hide');
+	} else if (navigatorBtns[1].classList.contains('hide')) {
+		navigatorBtns[1].classList.remove('hide');
+	}
 	
 	loaderShowTimeOut = setTimeout(() => {
 		loadingCont.classList.remove('hide');
@@ -118,13 +137,16 @@ async function loadNewPage (pageData) {
 }
 
 function init () {
-	window.addEventListener('click', () => {
-		// loadNewPage(pagesData[0]);
+	loadNewPage(0);
+	init = null;
+
+	navigatorBtns[0].addEventListener('click', () => {
+		loadNewPage(currentPageIndex - 1);
 	});
 
-	loadNewPage(pagesData[0]);
-
-	init = null;
+	navigatorBtns[1].addEventListener('click', () => {
+		loadNewPage(currentPageIndex + 1);
+	});
 }
 
 async function loadPagesData () {
