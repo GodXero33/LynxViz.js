@@ -1,5 +1,5 @@
 :root {
-	--lv-theme-hsl: 20deg;
+	--lv-theme-hsl: 0deg;
 	--lv-font-size: 18px;
 	--lv-nav-bar-height: calc(var(--lv-font-size) * 2 + 10px);
 	--lv-navigator-height: calc(var(--lv-font-size) * 2 + 10px);
@@ -25,6 +25,7 @@
 	--lv-navigator-btn-c1: hsl(var(--lv-theme-hsl), 80%, 40%);
 	--lv-navigator-btn-c2: hsl(var(--lv-theme-hsl), 100%, 60%);
 
+	--lv-doc-background: hsl(var(--lv-theme-hsl), 50%, 20%);
 	--lv-doc-anchor: hsl(var(--lv-theme-hsl), 80%, 50%);
 	--lv-doc-anchor-visited: hsl(calc(var(--lv-theme-hsl) + 20deg), 70%, 40%);
 	--lv-doc-h1: #ffffff;
@@ -372,7 +373,7 @@ input {
 	animation: none;
 }
 
-@scope (.page-container) {
+@scope (.page-cont) {
 	:scope {
 		position: absolute;
 		padding: calc(var(--lv-scrollbar-size) + 5px);
@@ -381,6 +382,7 @@ input {
 		left: 0;
 		width: 100%;
 		height: 100%;
+		background-color: var(--lv-doc-background);
 		transition: transform 0.5s ease-in-out;
 		overflow-x: hidden;
 		overflow-y: overlay;
@@ -427,6 +429,7 @@ input {
 	}
 
 	.p-type1 {
+		padding-inline: 50px;
 		margin-block: 1.3rem;
 		color: var(--lv-doc-p-type1);
 		font-size: 1rem;

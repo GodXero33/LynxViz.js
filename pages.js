@@ -46,7 +46,7 @@ function loadBGImage (url) {
 function createNewPage (pageData) {
 	const page = document.createElement('div');
 	const pageContent = document.createElement('div');
-	page.classList.add('page-container');
+	page.classList.add('page-cont');
 	page.classList.add('hide');
 	pageContent.classList.add('page-content');
 
@@ -59,22 +59,25 @@ function createNewPage (pageData) {
 	
 	return new Promise(async (res, rej) => {
 		const textData = await loadTextContent(pageData.textURL);
-		let bgImage = null;
+		
+		if (pageData.bgURL) {
+			let bgImage = null;
 
-		await loadBGImage(pageData.bgURL).then(img => {
-			bgImage = img;
-		}).catch(error => {
-			console.error(error);
-		});
+			await loadBGImage(pageData.bgURL).then(img => {
+				bgImage = img;
+			}).catch(error => {
+				console.error(error);
+			});
 
-		if (bgImage == null) {
-			if (!confirm('This page has some UI esues. Do you want to continue?')) {
-				rej('somthing went wrong');
-				page.remove();
-				return;
+			if (bgImage == null) {
+				if (!confirm('This page has some UI esues. Do you want to continue?')) {
+					rej('somthing went wrong');
+					page.remove();
+					return;
+				}
+			} else {
+				page.style.backgroundImage = `url(${bgImage.src})`;
 			}
-		} else {
-			page.style.backgroundImage = `url(${bgImage.src})`;
 		}
 
 		pageContent.innerHTML = textData;
