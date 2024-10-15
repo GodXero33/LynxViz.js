@@ -132,6 +132,20 @@ window.addEventListener('load', () => {
 			alert('The path is still finding or hasn\'t started to find yet!');
 		}
 	});
+
+	document.getElementById('diagonal-btn').addEventListener('click', (event) => {
+		pathFinder.diagonal = !pathFinder.diagonal;
+
+		if (pathFinder.diagonal) {
+			event.target.textContent = 'Diagonal Off';
+		} else {
+			event.target.textContent = 'Diagonal On';
+		}
+
+		pathFinder.updateMap(gridMap.grid);
+	});
+
+	document.getElementById('viewer-close-btn').click();
 });
 window.addEventListener('resize', resize);
 window.addEventListener('keydown', (event) => {

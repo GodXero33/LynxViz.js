@@ -7,10 +7,11 @@ canvas.setParent(document.getElementById('canvas-container'));
 canvas.clearColor = '#000';
 animation.append(canvas);
 
-const map = new MazeMap(30, 30);
+let map = new MazeMap(10, 10);
 let frames = 0;
 let frameSpeed = 2;
 let drawMode = 'maze';
+let gridSizeInputBlurByKeyDown = false;
 
 console.log(animation, canvas, map);
 
@@ -40,6 +41,16 @@ function resize () {
 	canvas.resize(parent.offsetWidth, parent.offsetHeight);
 	map.resize(parent.offsetWidth, parent.offsetHeight);
 	canvas.draw();
+}
+
+function changeMazeSize (size) {
+	if (size < 2 || size > 50) {
+		console.warn('size is not match: ', size);
+		return;
+	}
+
+	map = new MazeMap(size, size);
+	resize();
 }
 
 window.addEventListener('load', () => {
@@ -111,6 +122,23 @@ window.addEventListener('load', () => {
 
 	document.getElementById('viewer-close-btn').addEventListener('click', () => {
 		document.getElementById('data-viewer').classList.add('hide');
+	});
+
+	document.getElementById('grid-size-input').addEventListener('blur', (event) => {
+		if (gridSizeInputBlurByKeyDown) {
+			gridSizeInputBlurByKeyDown = false;
+			return;
+		}
+
+		changeMazeSize(event.target.value * 1);
+	});
+
+	document.getElementById('grid-size-input').addEventListener('keydown', (event) => {
+		if (event.code == 'Enter') {
+			changeMazeSize(event.target.value * 1);
+			gridSizeInputBlurByKeyDown = true;
+			event.target.blur();
+		}
 	});
 });
 window.addEventListener('resize', resize);

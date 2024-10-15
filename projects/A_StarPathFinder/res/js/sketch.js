@@ -21,7 +21,10 @@ class Cell {
 		if (y < rows - 1 && grid[y + 1][x].value == 0) neighbors.push(grid[y + 1][x]);
 
 		if (diagonal) {
-			//
+			if (x > 0 && y > 0 && grid[y - 1][x - 1].value == 0) neighbors.push(grid[y - 1][x - 1]);
+			if (x > 0 && y < rows - 1 && grid[y + 1][x - 1].value == 0) neighbors.push(grid[y + 1][x - 1]);
+			if (x < cols - 1 && y > 0 && grid[y - 1][x + 1].value == 0) neighbors.push(grid[y - 1][x + 1]);
+			if (x < cols - 1 && y < rows - 1 && grid[y + 1][x + 1].value == 0) neighbors.push(grid[y + 1][x + 1]);
 		}
 
 		cell.neighbors = neighbors;
@@ -79,6 +82,7 @@ class PathFinder {
 	constructor (grid) {
 		this.rows = grid.length;
 		this.cols = grid[0].length;
+		this.diagonal = true;
 		this.grid = this.generateGrid(grid);
 		this.path = [];
 		this.found = false;
@@ -96,7 +100,6 @@ class PathFinder {
 		this.y = 0;
 		this.animate = false;
 		this.isReady = false;
-		this.diagonal = false;
 
 		this.openedSet.push(this.start);
 	}
@@ -174,14 +177,17 @@ class PathFinder {
 			this.closedSet.push(current);
 			this.openedSet.splice(minIndex, 1);
 
-			current.neighbors.forEach((neighbor, index) => {
+			current.neighbors.forEach((neighbor) => {
 				if (this.closedSet.includes(neighbor)) return;
 
-				let tmpG = current.g + 1;
+				const dist = current.x == neighbor.x || current.y == neighbor.y ? 1 : 1.41;
+				let tmpG = current.g + dist;
 
 				if (this.openedSet.includes(neighbor)) {
 					if (tmpG < neighbor.g) {
 						neighbor.g = tmpG;
+					} else {
+						return;
 					}
 				} else {
 					neighbor.g = tmpG;
@@ -244,7 +250,7 @@ class PathFinder {
 	}
 
 	heuristic (a, b) {
-		return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+		return this.diagonal ? (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) : Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 	}
 
 	generatePath (current) {
@@ -283,14 +289,17 @@ class PathFinder {
 		this.closedSet.push(current);
 		this.openedSet.splice(minIndex, 1);
 
-		current.neighbors.forEach((neighbor, index) => {
+		current.neighbors.forEach((neighbor) => {
 			if (this.closedSet.includes(neighbor)) return;
 
-			let tmpG = current.g + 1;
+			const dist = current.x == neighbor.x || current.y == neighbor.y ? 1 : 1.41;
+			let tmpG = current.g + dist;
 
 			if (this.openedSet.includes(neighbor)) {
 				if (tmpG < neighbor.g) {
 					neighbor.g = tmpG;
+				} else {
+					return;
 				}
 			} else {
 				neighbor.g = tmpG;

@@ -25,7 +25,7 @@
 	--lv-navigator-btn-c1: hsl(var(--lv-theme-hsl), 80%, 40%);
 	--lv-navigator-btn-c2: hsl(var(--lv-theme-hsl), 100%, 60%);
 
-	--lv-doc-background: hsl(var(--lv-theme-hsl), 50%, 20%);
+	--lv-doc-background: #121212;
 	--lv-doc-anchor: hsl(var(--lv-theme-hsl), 80%, 50%);
 	--lv-doc-anchor-visited: hsl(calc(var(--lv-theme-hsl) + 20deg), 70%, 40%);
 	--lv-doc-h1: #ffffff;

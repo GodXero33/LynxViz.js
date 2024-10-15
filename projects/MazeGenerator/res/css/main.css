@@ -115,3 +115,14 @@ button {
 	min-height: 100%;
 	tab-size: 2;
 }
+
+#grid-size-set {
+	display: inline;
+	padding: 5px;
+	width: fit-content;
+	background-color: #cccccc;
+}
+
+#grid-size-set div {
+	display: inline;
+}
