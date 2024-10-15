@@ -82,7 +82,7 @@ class PathFinder {
 	constructor (grid) {
 		this.rows = grid.length;
 		this.cols = grid[0].length;
-		this.diagonal = true;
+		this.diagonal = false;
 		this.grid = this.generateGrid(grid);
 		this.path = [];
 		this.found = false;

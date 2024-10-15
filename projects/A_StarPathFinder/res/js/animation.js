@@ -144,8 +144,6 @@ window.addEventListener('load', () => {
 
 		pathFinder.updateMap(gridMap.grid);
 	});
-
-	document.getElementById('viewer-close-btn').click();
 });
 window.addEventListener('resize', resize);
 window.addEventListener('keydown', (event) => {
