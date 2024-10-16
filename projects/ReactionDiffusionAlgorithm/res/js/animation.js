@@ -27,7 +27,7 @@ function showFPS (ctx, fps) {
 function draw (ctx) {
 	canvas.clear();
 	diff.draw(ctx);
-	showFPS(ctx, animation.fps);
+	//showFPS(ctx, animation.fps);
 }
 
 function update (dt) {

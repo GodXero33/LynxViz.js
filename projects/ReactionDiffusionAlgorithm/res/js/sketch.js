@@ -2,8 +2,8 @@ class ReactionDiffusion {
 	constructor (w, h) {
 		this.w = w;
 		this.h = h;
+		this.len = w * h * 2;
 		this.grid = null;
-		this.next = null;
 		this.laplaceMap = [
 			[0, 0, -1],
 			[-1, -1, 0.05],
@@ -18,46 +18,55 @@ class ReactionDiffusion {
 
 		this.da = 1;
 		this.db = 0.1;
-		this.feed = 0.055;
-		this.k = 0.067;
+		this.feed = 0.01;
+		this.k = 0.03;
 		this.dt = 1;
 
 		this.initGrid();
 	}
 
 	addBlob (cx, cy, cr) {
-		for (let i = 0; i < this.h; i++) {
-			for (let j = 0; j < this.w; j++) {
-				const dx = cx - j;
-				const dy = cy - i;
+		for (let y = 0; y < this.h; y++) {
+			for (let x = 0; x < this.w; x++) {
+				const dx = cx - x;
+				const dy = cy - y;
 				const dis = dx * dx + dy * dy;
 
 				if (dis < cr * cr) {
-					this.grid[i][j].b = 1;
+					const index = y * this.w + x;
+					this.grid[index * 2 + 1] = 1;
 				}
 			}
 		}
 	}
 
 	initGrid () {
-		this.grid = Array.from({ length: this.h }, () => Array.from({ length: this.w }, () => { return { a: 1, b: 0 }; }));
-		this.next = Array.from({ length: this.h }, () => Array.from({ length: this.w }, () => { return { a: 0, b: 0 }; }));
+		this.grid = new Float32Array(this.len);
 
-		this.addBlob(300, 300, 75);
-		this.addBlob(300, 450, 30);
-		this.addBlob(300, 150, 30);
-		this.addBlob(450, 300, 30);
-		this.addBlob(150, 300, 30);
+		for (let i = 0; i < this.len; i += 2) {
+			this.grid[i] = 1;
+		}
+
+		for (let i = 0; i < 50; i++) {
+			const x = Math.floor(Math.random() * this.w);
+			const y = Math.floor(Math.random() * this.h);
+			const r = Math.floor(Math.random() * 20) + 20;
+			
+			this.addBlob(x, y, r);
+		}
+	}
+
+	getColor (a, b) {
+		return [a * 255, b * 255, a * 255];
 	}
 
 	getLaplace (x, y) {
 		let output = [0, 0];
 
 		this.laplaceMap.forEach(row => {
-			if (x + row[1] < 0 || x + row[1] > this.w - 1 || y + row[0] < 0 || y + row[0] > this.h - 1) return;
-			
-			output[0] += this.grid[y + row[0]][x + row[1]].a * row[2];
-			output[1] += this.grid[y + row[0]][x + row[1]].b * row[2];
+			const index = (y + row[0]) * this.w + x + row[1];
+			output[0] += this.grid[index * 2] * row[2];
+			output[1] += this.grid[index * 2 + 1] * row[2];
 		});
 
 		return output;
@@ -70,37 +79,31 @@ class ReactionDiffusion {
 	}
 
 	draw (ctx) {
-		this.grid.forEach((row, y) => {
-			row.forEach((pixelData, x) => {
-				const a = pixelData.a;
-				const b = pixelData.b;
-				const laplace = this.getLaplace(x, y);
-				const ab2 = a * b * b;
-
-				this.next[y][x].a = a + (this.da * laplace[0] - ab2 + this.feed * (1 - a)) * this.dt;
-				this.next[y][x].b = b + (this.db * laplace[1] + ab2 - b * (this.k + this.feed)) * this.dt;
-				this.next[y][x].a = this.constrain(this.next[y][x].a, 0, 1);
-				this.next[y][x].b = this.constrain(this.next[y][x].b, 0, 1);
-			});
-		});
-		
 		const pixlesData = ctx.getImageData(0, 0, this.w, this.h);
 		const pixels = pixlesData.data;
 
-		this.grid.forEach((row, y) => {
-			row.forEach((pixelData, x) => {
-				const index = (y * this.w + x) * 4;
-				pixels[index] = Math.floor(pixelData.a * 255);
-				pixels[index + 1] = Math.floor(pixelData.a * 255);
-				pixels[index + 2] = Math.floor(pixelData.a * 255);
-			});
-		});
+		for (let y = 1; y < this.h - 1; y++) {
+			for (let x = 1; x < this.w - 1; x++) {
+				const i = y * this.w + x;
+				const a = this.grid[i * 2];
+				const b = this.grid[i * 2 + 1];
+				const laplace = this.getLaplace(x, y);
+				const ab2 = a * b * b;
+				const newA = this.constrain(a + (this.da * laplace[0] - ab2 + this.feed * (1 - a)) * this.dt, 0, 1);
+				const newB = this.constrain(b + (this.db * laplace[1] + ab2 - b * (this.k + this.feed)) * this.dt, 0, 1);
+	
+				this.grid[i * 2] = newA;
+				this.grid[i * 2 + 1] = newB;
+
+				const color = this.getColor(newA, newB);
+	
+				pixels[i * 4] = Math.floor(color[0]);
+				pixels[i * 4 + 1] = Math.floor(color[1]);
+				pixels[i * 4 + 2] = Math.floor(color[2]);
+			}
+		}
 
 		ctx.putImageData(pixlesData, 0, 0);
-		
-		const tmp = this.grid;
-		this.grid = this.next;
-		this.next = tmp;
 	}
 
 	update() {}
