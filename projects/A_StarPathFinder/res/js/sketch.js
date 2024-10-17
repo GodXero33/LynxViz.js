@@ -1,13 +1,39 @@
+/**
+ * @class PathFinder
+ * 
+ * This class implements the A* search algorithm for finding the shortest path between two points in a grid-based map.
+ * It supports both straight and diagonal movement and efficiently calculates the optimal path by minimizing the 
+ * estimated total cost (f = g + h), where g is the cost from the start to the current cell, and h is the heuristic
+ * estimate of the cost from the current cell to the target.
+ * 
+ * The algorithm utilizes a priority queue (openedSet) to explore the most promising nodes first, recalculating 
+ * the cost for neighboring cells as needed. It includes functions for generating the path, resetting the grid, 
+ * and drawing the map and path on an HTML5 canvas.
+ * 
+ * More about the A* search algorithm: 
+ * https://en.wikipedia.org/wiki/A*_search_algorithm
+ * 
+ * @version v1.0.0
+ * @author GodXero - https://github.com/GodXero33
+ */
+
 class Cell {
 	constructor (x, y, value) {
 		this.x = x;
 		this.y = y;
 		this.value = value;
 		this.neighbors = null;
-		this.f = 0;
-		this.g = 0;
+		this.f = Infinity;
+		this.g = Infinity;
 		this.h = 0;
 		this.prev = null;
+	}
+
+	static reset (cell) {
+		cell.f = Infinity;
+		cell.g = Infinity;
+		cell.h = 0;
+		cell.prev = null;
 	}
 
 	static setNeighbors (cell, grid, diagonal, cols, rows) {
@@ -84,7 +110,7 @@ class PathFinder {
 		this.cols = grid[0].length;
 		this.diagonal = false;
 		this.grid = this.generateGrid(grid);
-		this.path = [];
+		this.path = null;
 		this.found = false;
 		this.cellSize = 0;
 		this.color1 = '#ff0';
@@ -92,16 +118,15 @@ class PathFinder {
 		this.color3 = '#0ff';
 		this.color4 = '#f00';
 		this.color5 = '#00f';
-		this.openedSet = [];
-		this.closedSet = [];
-		this.start = this.grid[0][1];
-		this.end = this.grid[this.rows - 1][this.cols - 2];
+		this.openedSet = null;
+		this.start = null;
+		this.end = null;
 		this.x = 0;
 		this.y = 0;
 		this.animate = false;
 		this.isReady = false;
 
-		this.openedSet.push(this.start);
+		this.reset();
 	}
 
 	generateGrid (grid) {
@@ -138,16 +163,23 @@ class PathFinder {
 	reset () {
 		this.path = [];
 		this.openedSet = [];
-		this.closedSet = [];
 		this.start = this.grid[0][1];
 		this.end = this.grid[this.rows - 1][this.cols - 2];
 		this.found = false;
+
+		this.grid.forEach(row => {
+			row.forEach(cell => {
+				Cell.reset(cell);
+			});
+		});
+
+		this.start.g = 0;
+		this.start.f = this.heuristic(this.start, this.end);
 
 		this.openedSet.push(this.start);
 	}
 
 	init () {
-		this.found = false;
 		this.reset();
 
 		if (this.animate) {
@@ -174,29 +206,21 @@ class PathFinder {
 				break;
 			}
 
-			this.closedSet.push(current);
 			this.openedSet.splice(minIndex, 1);
-
-			current.neighbors.forEach((neighbor) => {
-				if (this.closedSet.includes(neighbor)) return;
-
+			
+			current.neighbors.forEach(neighbor => {
 				const dist = current.x == neighbor.x || current.y == neighbor.y ? 1 : 1.41;
 				let tmpG = current.g + dist;
 
-				if (this.openedSet.includes(neighbor)) {
-					if (tmpG < neighbor.g) {
-						neighbor.g = tmpG;
-					} else {
-						return;
-					}
-				} else {
+				if (tmpG < neighbor.g) {
+					neighbor.prev = current;
 					neighbor.g = tmpG;
-					this.openedSet.push(neighbor);
-				}
+					neighbor.f = tmpG + this.heuristic(neighbor, this.end);
 
-				neighbor.h = this.heuristic(neighbor, this.end);
-				neighbor.f = neighbor.g + neighbor.h;
-				neighbor.prev = current;
+					if (!this.openedSet.includes(neighbor)) {
+						this.openedSet.push(neighbor);
+					}
+				}
 			});
 		}
 
@@ -211,11 +235,6 @@ class PathFinder {
 
 		ctx.fillStyle = this.color4;
 		ctx.fillRect(this.end.x * this.cellSize + 0.5, this.end.y * this.cellSize + 0.5, this.cellSize - 1, this.cellSize - 1);
-
-		this.closedSet.forEach(cell => {
-			ctx.fillStyle = this.color1;
-			ctx.fillRect(cell.x * this.cellSize + 0.5, cell.y * this.cellSize + 0.5, this.cellSize - 1, this.cellSize - 1);
-		});
 		
 		this.openedSet.forEach(cell => {
 			ctx.fillStyle = this.color2;
@@ -266,7 +285,6 @@ class PathFinder {
 
 	update () {
 		if (!this.isReady) return;
-
 		if (this.openedSet.length == 0) return;
 
 		let minIndex = 0;
@@ -286,29 +304,21 @@ class PathFinder {
 			return;
 		}
 
-		this.closedSet.push(current);
 		this.openedSet.splice(minIndex, 1);
 
-		current.neighbors.forEach((neighbor) => {
-			if (this.closedSet.includes(neighbor)) return;
-
+		current.neighbors.forEach(neighbor => {
 			const dist = current.x == neighbor.x || current.y == neighbor.y ? 1 : 1.41;
 			let tmpG = current.g + dist;
 
-			if (this.openedSet.includes(neighbor)) {
-				if (tmpG < neighbor.g) {
-					neighbor.g = tmpG;
-				} else {
-					return;
-				}
-			} else {
+			if (tmpG < neighbor.g) {
+				neighbor.prev = current;
 				neighbor.g = tmpG;
-				this.openedSet.push(neighbor);
-			}
+				neighbor.f = tmpG + this.heuristic(neighbor, this.end);
 
-			neighbor.h = this.heuristic(neighbor, this.end);
-			neighbor.f = neighbor.g + neighbor.h;
-			neighbor.prev = current;
+				if (!this.openedSet.includes(neighbor)) {
+					this.openedSet.push(neighbor);
+				}
+			}
 		});
 	}
 
