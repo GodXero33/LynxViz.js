@@ -4,36 +4,39 @@ const animation = LynxViz.createAnimation({ fps: 60 });
 const canvas = LynxViz.createCanvas();
 
 canvas.setParent(document.getElementById('canvas-container'));
-canvas.clearColor = '#486';
+canvas.clearColor = '#333';
 animation.append(canvas);
 
-console.log(animation, canvas);
+const world = new World(map);
+const car = new Car(world, 'car_model_1');
 
-function showFPS (ctx, fps) {
-	ctx.fillStyle = '#fff';
-	ctx.strokeStyle = '#000';
-	ctx.fillRect(0, 0, 42, 22);
-	ctx.strokeRect(0, 0, 42, 22);
-
-	ctx.font = '18px Arial';
-	ctx.textAlign = 'left';
-	ctx.textBasline = 'hanging';
-	ctx.fillStyle = '#000';
-	ctx.fillText((Math.round(fps * 10) / 10).toFixed(1), 3, 18);
-}
+console.log(animation, canvas, world, car);
 
 function draw (ctx) {
 	const transform = ctx.getTransform();
 
 	canvas.clear();
 	ctx.translate(canvas.width / 2, canvas.height / 2);
-	//
+
+	if (SIM_SETTINGS.camera_rotate) ctx.rotate(-car.angle);
+
+	ctx.translate(-car.x, -car.y);
+
+	if (SIM_SETTINGS.debug_mode) {
+		world.drawDebug(ctx);
+		car.drawDebug(ctx);
+	} else {
+		world.draw(ctx);
+		car.draw(ctx);
+	}
+	
 	ctx.setTransform(transform);
 	showFPS(ctx, animation.fps);
 }
 
 function update (dt) {
-	
+	world.update();
+	car.update();
 }
 
 animation.loop = update;
@@ -57,13 +60,7 @@ window.addEventListener('keydown', (event) => {
 		} else {
 			animation.pause();
 		}
-	} else if (event.code == 'ArrowUp' && game.dir != 2) {
-		game.dir = 0;
-	} else if (event.code == 'ArrowDown' && game.dir != 0) {
-		game.dir = 2;
-	} else if (event.code == 'ArrowRight' && game.dir != 1) {
-		game.dir = 3;
-	} else if (event.code == 'ArrowLeft' && game.dir != 3) {
-		game.dir = 1;
+	} else if (event.code == 'KeyD') {
+		SIM_SETTINGS.debug_mode = !SIM_SETTINGS.debug_mode;
 	}
 });
