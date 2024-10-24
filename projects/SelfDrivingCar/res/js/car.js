@@ -119,9 +119,9 @@ class Car {
 			const y = boundsDirections[1];
 			const dis = Math.sqrt(x * x + y * y);
 			const speed = Math.abs(this.speed);
-			
-			this.x -= x * speed * 2 / dis;
-			this.y -= y * speed * 2 / dis;
+
+			this.x -= x * speed / dis;
+			this.y -= y * speed / dis;
 
 			car.speed -= 0.8;
 		}

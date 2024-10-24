@@ -7,23 +7,27 @@ canvas.setParent(document.getElementById('canvas-container'));
 canvas.clearColor = '#000';
 animation.append(canvas);
 
-console.log(animation, canvas, space);
+console.log(animation, canvas);
 
 function draw (ctx) {
 	const transform = ctx.getTransform();
 
 	canvas.clear();
-	showFPS(ctx, animation.fps);
-
-	// Draw
 	ctx.translate(canvas.width / 2, canvas.height / 2);
-	space.draw(ctx);
+
+	points.forEach(point => {
+		let guess = perceptron.guess([point.x, point.y]);
+		Point.draw(ctx, point, guess);
+	});
+
+	drawEquation(ctx);
 
 	ctx.setTransform(transform);
+
+	showFPS(ctx, animation.fps);
 }
 
 function update (dt) {
-	space.update(dt);
 }
 
 animation.loop = update;
