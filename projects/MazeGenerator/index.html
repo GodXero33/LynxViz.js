@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<title>Maze Generator</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+		<link rel="stylesheet" href="res/css/main.css">
+		<script type="text/javascript" src="../../lib/lynxviz.js"></script>
+		<script type="text/javascript" src="res/js/sketch.js"></script>
+	</head>
+	<body>
+		<div id="main-container">
+			<div id="canvas-container"></div>
+			<div id="btn-cont">
+				<button id="mode-btn">Change Generator Mode To Animate</button>
+				<button id="gen-btn">Generate</button>
+				<button id="map-mode-btn">Change Map Mode To Grid</button>
+				<button id="save-btn">Save PNG</button>
+				<button id="get-data-btn">Get Map Data</button>
+				<div id="grid-size-set">
+					<div>Maze Size: </div>
+					<input type="number" id="grid-size-input" value="10">
+				</div>
+			</div>
+			<div id="data-viewer" class="hide">
+				<div id="viewer-close-btn"></div>
+				<div class="code"></div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="res/js/animation.js"></script>
+	</body>
+</html>
