@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, interactive-widget=resizes-content">
+		<title>LynxViz.js</title>
+		<link rel="shortcut icon" href="res/images/logo.jpg" type="image/x-icon">
+		<link rel="stylesheet" href="index.css">
+		<link rel="stylesheet" href="res/prism.css">
+		<script src="res/prism.js" type="text/javascript"></script>
+		<script src="pages.js" type="text/javascript" defer></script>
+		<script src="navbar.js" type="text/javascript" defer></script>
+		<script>
+document.querySelector(':root').style.setProperty('--lv-theme-hsl', `${Math.floor(Math.random() * 360)}deg`);
+		</script>
+	</head>
+	<body>
+		<div id="main-container">
+			<nav id="nav-bar">
+				<div class="nav-item" id="nav-logo">
+					<img src="res/images/logo-transp.png">
+				</div>
+				<div class="nav-item" id="nav-search">
+					<input type="text" id="nav-search-bar" placeholder="search" tabindex="1">
+					<div id="search-result-cont" class="hide"></div>
+				</div>
+				<div class="nav-item" id="nav-bar-extra-btns-cont">
+					<div class="nav-item btn" id="nav-example-btn">Examples</div>
+					<div class="nav-item btn" id="nav-community-btn">Community</div>
+					<div class="nav-item btn" id="nav-faq-btn">FAQ</div>
+				</div>
+				<div id="nav-bar-open-btn">
+					<div class="open-btn-fragment"></div>
+					<div class="open-btn-fragment"></div>
+					<div class="open-btn-fragment"></div>
+					<input type="checkbox">
+				</div>
+			</nav>
+			<div id="pages-container"></div>
+			<div id="page-navigator">
+				<div class="navigator-btn hide" id="navigator-prev"></div>
+				<div class="navigator-btn hide" id="navigator-next"></div>
+			</div>
+		</div>
+		<div id="loading-wrapper" class="hide"></div>
+	</body>
+</html>

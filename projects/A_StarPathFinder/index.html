@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<title>A* Path Finder</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+		<link rel="stylesheet" href="res/css/main.css">
+		<script type="text/javascript" src="../../lib/lynxviz.js"></script>
+		<script type="text/javascript" src="res/js/sketch.js"></script>
+	</head>
+	<body>
+		<div id="main-container">
+			<div id="canvas-container"></div>
+			<div id="btn-cont">
+				<button id="mode-btn">Change Finder Mode To Animate</button>
+				<button id="find-btn">Find</button>
+				<button id="save-btn">Download Data JSON</button>
+				<button id="img-save-btn">Save PNG</button>
+				<button id="add-data-btn">Add Map Data</button>
+				<button id="diagonal-btn">Diagonal On</button>
+			</div>
+			<div id="data-viewer">
+				<div id="viewer-close-btn">Ok</div>
+				<div class="code">
+					<div>Paste Map Data Here: </div>
+					<textarea id="data-input"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="res/js/animation.js"></script>
+	</body>
+</html>
