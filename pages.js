@@ -9,7 +9,7 @@ let currentPage = null;
 let isPageLoading = false;
 let pagesData = null;
 let loaderShowTimeOut = null;
-let currentPageIndex = 0;
+let currentPageIndex = 1;
 
 function loadTextContent (url) {
 	return new Promise(async (req, rej) => {
